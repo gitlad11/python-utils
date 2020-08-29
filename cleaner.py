@@ -41,24 +41,43 @@ print(today)
 yesterday =  datetime.now() - timedelta(days=1)
 print(yesterday)
 
-print('-----------------------------------------')
-
-
+print('CLEAR TEMPORARY FILES')
+print('----------------------------------------------------------------')
 for f in temp:
     time = datetime.fromtimestamp(os.stat(f).st_mtime)
     print(time)
     size = int(os.stat(f).st_size)
     print(size)
-    if size > 1000 and time < yesterday:
+    if size > 3000 and time < yesterday:
         with open(LOGFILE, 'w') as file:
             file.write(str(f) + '\n')        
             os.remove(f)
             
-            
-            
-            
-   
- 
 
+localdata = ENV['LOCALAPPDATA']       
+appdata = ENV['APPDATA']            
 
+print("CLEAR CACHE")
+print("----------------------------------------------------------------")
+def cachehandler(datapath):
+    CACHES = ['CACHE', 'cache', 'TEMP', 'temporary', 'log', 'cookie']
 
+    for fullpath, dirs, files in os.walk(datapath, topdown=False):
+        for dir in dirs:
+            for ca in CACHES:
+                if ca in dir:
+                    print('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\')
+                    print('directory: ' + dir)
+                    print('\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\')
+                    os.chdir('{}/{}/'.format(fullpath,dir))
+                    dirfiles = os.listdir()
+                    for df in dirfiles:
+                        if df.endswith('.txt'):
+                            os.remove(df)
+                            print(df + ' - txtfile has been deleted')
+                        if df.endswith('.log'):
+                            os.remove(df)
+                            print(df + ' - logfile has been deleted')
+                        else:
+                            print(df + ' - is not txt, log')
+cachehandler(localdata)
