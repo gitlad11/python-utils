@@ -49,7 +49,7 @@ for f in temp:
     print(time)
     size = int(os.stat(f).st_size)
     print(size)
-    if size > 1000 and time < yesterday:
+    if size > 3000 and time < yesterday:
         with open(LOGFILE, 'w') as file:
             file.write(str(f) + '\n')        
             os.remove(f)
