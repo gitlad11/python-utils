@@ -1,6 +1,6 @@
 import os
 import sys
-
+import json
 try:
     import psutil
     import win32gui
@@ -68,7 +68,7 @@ def get_cpu_count():
 
 def get_cpu_frequency():
     cpu_freq = psutil.cpu_freq()
-    CPU_FREQ = "{}-{} ; {}-{}".format("Макс. частота",cpu_freq.max,"Мин. частота", cpu_freq.min)
+    CPU_FREQ = "{}-{} ; {}-{}".format("Макс. частота CPU",cpu_freq.max,"Мин. частота CPU", cpu_freq.min)
     return CPU_FREQ
 
 def get_battery():
@@ -86,17 +86,37 @@ def get_disks_info():
         PARTITIONS.append(part.device)
     return PARTITIONS
 
-def get_disk_usage():
+def get_virtual_mem():
     memory = psutil.virtual_memory()
-    available_in_mb = round(memory.available / 1024)
-    total_in_mb = round(memory.total /1024)
-    used_in_mb = round(memory.used / 1024 )
-    available_in_gb = round(available_in_mb / 1024)
-    total_in_gb = round(total_in_mb / 1024)
-    used_in_gb = round(used_in_mb /1024)
-    MEMORY = "{}:{}GB ; {}:{}GB ; {}:{}GBx".format("Всего памяти", total_in_gb,"Свободно памяти" , available_in_gb, "Занято памяти" , used_in_gb)
+    available_in_mb = memory.available >> 20
+    total_in_mb = memory.total >> 20
+    used_in_mb = memory.used >> 20
+    available_in_gb = memory.available >> 30
+    total_in_gb = memory.total >> 30
+    used_in_gb = memory.used >> 30
+    MEMORY = "{}:{}GB ; {}:{}GB ; {}:{}GB".format("Всего памяти", total_in_gb,"Свободно памяти" , available_in_gb, "Занято памяти" , used_in_gb)
     return MEMORY
 
+def get_disk_usage(*args):
+    disk = None
+    if len(args) > 0:
+        disk = args[0]    
+    if disk == None:
+        disk = get_disks_info()[0]
+
+    memory = psutil.disk_usage(disk)
+    used = memory.used >> 30
+    free = memory.free >> 30
+    MEMORY = "{}:{}GB {}% ; {}:{}GB".format("Занято памяти",used, memory.percent, "Свободно памяти", free)
+    return MEMORY
+
+WIN_INFO = windows_scan()
+basic_data = {'Пользователь' : USERNAME,
+              'Корневая папка' : ROOTDIR, 
+              'Стандартная информация' : WIN_INFO}
+
 if SYSTEM in windows:
-    print(windows_scan())
+    print(basic_data)
+    with open("windows_info.json", "w") as f:
+        f.write(json.dumps(basic_data))
     
