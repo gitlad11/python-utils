@@ -91,11 +91,11 @@ def keyboard_press(*args):
 
 
 
-for p in psutil.process_iter(): 
-    if p.name() in ['opera.exe','firefox.exe','google.exe','yandex.exe']:
-        print(p)
-else:
-    print('нет процесса')
+#for p in psutil.process_iter(): 
+    #if p.name() in ['opera.exe','firefox.exe','google.exe','yandex.exe']:
+        #print(p)
+#else:
+    #print('нет процесса')
 
 print(api.GetSystemMetrics(80))
 print(api.GetSystemMetrics(15))
@@ -104,8 +104,8 @@ print(api.GetSystemMetrics(11))
 
 BR_POS = [65, 325]
 
-#mouse_clicker(WIN_MENU_W, WIN_MENU_H)
-#mouse_clicker(WIN_MENU_W, WIN_MENU_H - 50)
-#keyboard_press("b","r","o","w","s","e","r")
+mouse_clicker(WIN_MENU_W, WIN_MENU_H)
+mouse_clicker(WIN_MENU_W, WIN_MENU_H - 50)
+keyboard_press("b","r","o","w","s","e","r")
 
-#mouse_clicker(BR_POS[0],BR_POS[1])
+mouse_clicker(BR_POS[0],BR_POS[1])
